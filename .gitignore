@@ -1,0 +1,23 @@
+# dependencies
+node_modules/
+
+# build output
+dist/
+
+# environment variables — never push secrets to GitHub
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# logs
+npm-debug.log*
+*.log
+
+# local dev-only scripts
+smoke-test.mjs
+debug-*.mjs
+
+# OS files
+.DS_Store
+Thumbs.db
