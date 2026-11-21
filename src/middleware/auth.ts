@@ -8,11 +8,12 @@ import { asyncHandler } from '../utils/asyncHandler.js';
 import type { AuthUser } from '../interfaces/auth.js';
 
 /**
- * Better Auth (in the Next.js client) signs the JWTs and exposes its public
- * keys on the JWKS endpoint. Tokens are verified here on every request, so
- * invalid or expired tokens are rejected with 401 before touching any data.
+ * Better Auth (mounted on this server) signs the JWTs and exposes its
+ * public keys on the JWKS endpoint. Tokens are verified here on every
+ * request, so invalid or expired tokens are rejected with 401 before
+ * touching any data.
  */
-const jwks = createRemoteJWKSet(new URL(env.JWT_JWKS_URL));
+const jwks = createRemoteJWKSet(new URL(env.jwksUrl));
 
 /** Verifies the Bearer token, loads the user from the DB and blocks banned accounts. */
 export const authenticate = asyncHandler(async (req, _res, next) => {
@@ -44,7 +45,7 @@ export const authenticate = asyncHandler(async (req, _res, next) => {
   }
 
   req.user = {
-    id: user._id,
+    id: user._id.toString(),
     name: user.name,
     email: user.email,
     image: user.image,
