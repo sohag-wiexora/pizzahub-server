@@ -1,16 +1,15 @@
-import mongoose, { type Document, type Model } from 'mongoose';
+import mongoose, { type Document, type Model, type Types } from 'mongoose';
 import { SUBSCRIPTION_PLANS, USER_ROLES } from '../constants/index.js';
 
 const { model, models, Schema } = mongoose;
 
 /**
- * Better Auth manages this collection from the Next.js client.
- * The server only reads it and updates the extra business fields
- * (role, isBlocked, subscription...) that Better Auth does not touch.
- * `strict: false` keeps unknown Better Auth fields intact on updates.
+ * Better Auth generates the user ids itself (MongoDB ObjectId hex string),
+ * so this collection stores `_id` as an ObjectId — the same convention the
+ * auth JWT subject and the rest of the API identifiers use.
  */
-export interface UserDocument extends Document<string> {
-  _id: string;
+export interface UserDocument extends Document<Types.ObjectId> {
+  _id: Types.ObjectId;
   name: string;
   email: string;
   emailVerified: boolean;
@@ -21,13 +20,14 @@ export interface UserDocument extends Document<string> {
   subscriptionPlan: (typeof SUBSCRIPTION_PLANS)[number];
   subscriptionExpiresAt: Date | null;
   stripeCustomerId: string | null;
+  stripeSubscriptionId: string | null;
   createdAt: Date;
   updatedAt: Date;
 }
 
 const userSchema = new Schema<UserDocument>(
   {
-    _id: { type: String, required: true },
+    _id: { type: Schema.Types.ObjectId, required: true },
     name: { type: String, required: true, trim: true },
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
     emailVerified: { type: Boolean, default: false },
@@ -38,6 +38,7 @@ const userSchema = new Schema<UserDocument>(
     subscriptionPlan: { type: String, enum: [...SUBSCRIPTION_PLANS], default: 'free' },
     subscriptionExpiresAt: { type: Date, default: null },
     stripeCustomerId: { type: String, default: null },
+    stripeSubscriptionId: { type: String, default: null },
   },
   {
     timestamps: true,

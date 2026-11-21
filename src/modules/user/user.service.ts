@@ -44,7 +44,7 @@ export interface UserListOptions extends Pagination {
 
 /** Public-safe projection of a user document (internal fields stripped). */
 const pickPublicUser = (user: UserDocument) => ({
-  _id: user._id,
+  _id: user._id.toString(),
   name: user.name,
   email: user.email,
   image: user.image,
@@ -57,7 +57,7 @@ const pickPublicUser = (user: UserDocument) => ({
 });
 
 const loadUserOr404 = async (userId: string): Promise<UserDocument> => {
-  // Better Auth generates its own string ids — they are not always valid ObjectIds.
+  // Better Auth generates ObjectId based ids — mongoose casts them for us.
   const user = await User.findById(userId);
   if (!user) {
     throw new ApiError(404, 'User not found.');
@@ -98,7 +98,7 @@ export const setUserBlocked = async (userId: string, isBlocked: boolean, adminId
   if (user.role === 'admin') {
     throw new ApiError(403, 'Admin accounts cannot be blocked.');
   }
-  if (isBlocked && user._id === adminId) {
+  if (isBlocked && user._id.toString() === adminId) {
     throw new ApiError(400, 'You cannot block your own account.');
   }
 

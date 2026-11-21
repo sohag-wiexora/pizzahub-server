@@ -160,7 +160,7 @@ const handleInvoicePaid = async (invoice: Stripe.Invoice): Promise<void> => {
   if (alreadyRecorded) return;
 
   await Transaction.create({
-    vendorId: vendor._id,
+    vendorId: vendor._id.toString(),
     plan: 'premium',
     amount: toMajorUnits(invoice.amount_paid),
     currency: invoice.currency ?? 'usd',
@@ -173,7 +173,7 @@ const handleInvoicePaid = async (invoice: Stripe.Invoice): Promise<void> => {
   const currentExpiry = vendor.subscriptionExpiresAt ?? new Date();
   const base = currentExpiry.getTime() > Date.now() ? currentExpiry : new Date();
 
-  await User.findByIdAndUpdate(vendor._id, {
+  await User.findByIdAndUpdate(vendor._id.toString(), {
     subscriptionExpiresAt: addDays(base, PREMIUM_PERIOD_DAYS),
   });
 
@@ -189,7 +189,7 @@ const handleSubscriptionDeleted = async (subscription: Stripe.Subscription): Pro
 
   if (!vendor) return;
 
-  await User.findByIdAndUpdate(vendor._id, {
+  await User.findByIdAndUpdate(vendor._id.toString(), {
     subscriptionPlan: 'free',
     subscriptionExpiresAt: null,
     stripeSubscriptionId: null,
