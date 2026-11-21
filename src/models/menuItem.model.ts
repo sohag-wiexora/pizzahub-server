@@ -12,6 +12,8 @@ export interface MenuItemDocument extends Document {
   location: string;
   images: string[];
   status: (typeof MENU_ITEM_STATUSES)[number];
+  rating: number;
+  reviewCount: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -26,6 +28,8 @@ const menuItemSchema = new Schema<MenuItemDocument>(
     location: { type: String, required: true, trim: true },
     images: { type: [String], required: true },
     status: { type: String, enum: [...MENU_ITEM_STATUSES], default: 'pending', index: true },
+    rating: { type: Number, default: 0, min: 0, max: 5 },
+    reviewCount: { type: Number, default: 0, min: 0 },
   },
   {
     timestamps: true,

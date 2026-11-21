@@ -116,7 +116,17 @@ export const listFeaturedItems = async (limit = 6) => {
 
   return MenuItem.aggregate([
     { $match: { status: 'approved' } },
-    { $lookup: { from: 'user', localField: 'vendorId', foreignField: '_id', as: 'vendor' } },
+    // vendorId is stored as a string, while Better Auth user ids are
+    // ObjectIds. `populate()` casts automatically, but `$lookup` does not —
+    // so convert it explicitly or every featured item is silently dropped.
+    {
+      $addFields: {
+        vendorObjectId: {
+          $convert: { input: '$vendorId', to: 'objectId', onError: null, onNull: null },
+        },
+      },
+    },
+    { $lookup: { from: 'user', localField: 'vendorObjectId', foreignField: '_id', as: 'vendor' } },
     { $unwind: '$vendor' },
     {
       $addFields: {
@@ -134,8 +144,11 @@ export const listFeaturedItems = async (limit = 6) => {
         location: 1,
         images: 1,
         status: 1,
+        rating: 1,
+        reviewCount: 1,
         createdAt: 1,
         vendor: {
+          _id: '$vendor._id',
           name: '$vendor.name',
           businessName: '$vendor.businessName',
           image: '$vendor.image',
