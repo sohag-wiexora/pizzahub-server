@@ -44,6 +44,11 @@ export const errorHandler: ErrorRequestHandler = (error, _req, res, _next) => {
       field,
       message: err.message,
     }));
+  } else if (known.name === 'MulterError') {
+    statusCode = 400;
+    message = known.message?.includes('File too large')
+      ? 'Image must be smaller than 5 MB.'
+      : 'Invalid image upload.';
   } else if (error instanceof SyntaxError && 'body' in error) {
     statusCode = 400;
     message = 'Malformed JSON body.';

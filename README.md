@@ -83,6 +83,73 @@ Copy `.env.example` to `.env` and fill in your own values. **Never push `.env` t
 
 ---
 
+## 🔗 Client Integration Guide (Better Auth + Google)
+
+The Express API never sees Google credentials — Google login is handled by Better Auth inside the Next.js client, and this server simply verifies the JWTs Better Auth issues. A Google-signed-in user works with every API exactly like an email/password user, because both end up in the same MongoDB `user` collection.
+
+**Client `.env.local`**
+
+```bash
+BETTER_AUTH_SECRET=<random-strong-secret>
+BETTER_AUTH_URL=http://localhost:3000
+GOOGLE_CLIENT_ID=<from-google-cloud-console>
+GOOGLE_CLIENT_SECRET=<from-google-cloud-console>
+NEXT_PUBLIC_IMGBB_API_KEY=<imgbb-key>
+```
+
+**Better Auth server config (client repo)**
+
+```ts
+import { betterAuth } from 'better-auth';
+import { mongodbAdapter } from 'better-auth/adapters/mongodb';
+import { bearer, jwt } from 'better-auth/plugins';
+
+export const auth = betterAuth({
+  database: mongodbAdapter(db),
+  emailAndPassword: { enabled: true },
+  socialProviders: {
+    google: {
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    },
+  },
+  user: {
+    additionalFields: {
+      role: { type: 'string', defaultValue: 'customer', input: false },
+      isBlocked: { type: 'boolean', defaultValue: false, input: false },
+      businessName: { type: 'string', required: false },
+      subscriptionPlan: { type: 'string', defaultValue: 'free', input: false },
+      subscriptionExpiresAt: { type: 'date', required: false, input: false },
+    },
+  },
+  // Both plugins are required for this API to work:
+  // jwt()   -> exposes /api/auth/jwks so the Express server can verify tokens
+  // bearer()-> lets the client fetch a bearer token for API calls
+  plugins: [jwt(), bearer()],
+});
+```
+
+**Calling this API from the client**
+
+```ts
+// 1. get a bearer token from Better Auth
+const { token } = await fetch('/api/auth/token').then((r) => r.json());
+
+// 2. send it with every API request
+fetch(`${process.env.NEXT_PUBLIC_API_URL}/orders`, {
+  method: 'POST',
+  headers: {
+    'content-type': 'application/json',
+    authorization: `Bearer ${token}`,
+  },
+  body: JSON.stringify({ /* ... */ }),
+});
+```
+
+Google sign-ups land with the default `customer` role (the social flow skips the role picker) — vendors can be onboarded from the client afterwards. Admin accounts are only created through the seed script described above.
+
+---
+
 ## ⚙️ Installation & Running Locally
 
 ```bash

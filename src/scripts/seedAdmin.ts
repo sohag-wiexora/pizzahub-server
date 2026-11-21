@@ -1,18 +1,22 @@
 import mongoose from 'mongoose';
+import { auth, closeAuthClient } from '../config/auth.js';
 import { connectDB } from '../config/db.js';
 import { User } from '../models/user.model.js';
 
 /**
- * Securely promotes an existing account to admin.
+ * Creates (or promotes) the admin account securely.
  *
- * Admin accounts are never created through public registration — sign up
- * in the app with ADMIN_EMAIL first, then run this script once:
+ * Admin accounts are never created through public registration — this
+ * server-side script is the only path. It signs the account up through
+ * Better Auth (so the password is hashed correctly) and then promotes
+ * the role in the database:
  *
  *   npm run seed:admin
  */
 const run = async (): Promise<void> => {
   const adminEmail = process.env.ADMIN_EMAIL?.toLowerCase().trim();
   const adminName = process.env.ADMIN_NAME ?? 'PizzaHub Admin';
+  const adminPassword = process.env.ADMIN_PASSWORD;
 
   if (!adminEmail) {
     console.error('✗ ADMIN_EMAIL is missing in .env');
@@ -21,37 +25,59 @@ const run = async (): Promise<void> => {
 
   await connectDB();
 
-  const user = await User.findOne({ email: adminEmail });
+  const existing = await User.findOne({ email: adminEmail });
 
-  if (!user) {
-    console.error(
-      `✗ No account found for "${adminEmail}". ` +
-        'Sign up in the PizzaHub client with this email first, then run the script again.',
-    );
+  if (!existing) {
+    if (!adminPassword) {
+      console.error(
+        '✗ ADMIN_PASSWORD is missing in .env — it is required to create the admin account.',
+      );
+      await mongoose.connection.close();
+      await closeAuthClient();
+      process.exit(1);
+    }
+
+    await auth.api.signUpEmail({
+      body: { name: adminName, email: adminEmail, password: adminPassword },
+    });
+    console.log(`✓ Admin account created for "${adminEmail}" via Better Auth`);
+  }
+
+  const admin = await User.findOneAndUpdate(
+    { email: adminEmail },
+    {
+      $set: {
+        name: adminName,
+        role: 'admin',
+        isBlocked: false,
+        emailVerified: true,
+        subscriptionPlan: 'free',
+        subscriptionExpiresAt: null,
+      },
+    },
+    { returnDocument: 'after' },
+  );
+
+  if (!admin) {
+    console.error('✗ Could not promote the admin account.');
     await mongoose.connection.close();
+    await closeAuthClient();
     process.exit(1);
   }
 
-  if (user.role === 'admin') {
-    console.log(`✓ "${user.email}" is already an admin — nothing to do.`);
-  } else {
-    user.role = 'admin';
-    user.isBlocked = false;
-    await user.save();
-    console.log(`✓ "${user.email}" has been promoted to admin.`);
-  }
-
-  // Keep the display name in sync with the environment.
-  if (user.name !== adminName) {
-    user.name = adminName;
-    await user.save();
+  console.log(`✓ "${admin.email}" is now an admin (name: ${admin.name})`);
+  if (existing) {
+    console.log('  (the account already existed — role promoted to admin)');
   }
 
   await mongoose.connection.close();
+  await closeAuthClient();
   process.exit(0);
 };
 
-run().catch((error) => {
+run().catch(async (error) => {
   console.error('✗ Admin seed failed:', error);
+  await mongoose.connection.close().catch(() => undefined);
+  await closeAuthClient().catch(() => undefined);
   process.exit(1);
 });
