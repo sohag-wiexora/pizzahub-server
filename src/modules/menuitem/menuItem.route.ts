@@ -3,6 +3,8 @@ import { authenticate, requireRole } from '../../middleware/auth.js';
 import { validateBody } from '../../middleware/validate.js';
 import * as controller from './menuItem.controller.js';
 import { createMenuItemSchema, updateMenuItemSchema } from './menuItem.validation.js';
+import * as reviewController from '../review/review.controller.js';
+import { createReviewSchema } from '../review/review.validation.js';
 
 const router = Router();
 
@@ -39,6 +41,16 @@ router.patch(
   controller.moderateItemStatus,
 );
 router.delete('/admin/:id', authenticate, requireRole('admin'), controller.deleteItemAsAdmin);
+
+/* ── Reviews ── */
+router.get('/:id/reviews', reviewController.listItemReviews);
+router.post(
+  '/:id/reviews',
+  authenticate,
+  requireRole('customer'),
+  validateBody(createReviewSchema),
+  reviewController.createReview,
+);
 
 /* ── Public item details (kept last so /:id does not swallow the paths above) ── */
 router.get('/:id', controller.getPublicItemDetails);

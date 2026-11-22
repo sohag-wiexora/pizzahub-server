@@ -211,6 +211,14 @@ Admins are **never** created through public registration:
 | PATCH | `/orders/:id/accept` · `/:id/reject` | Vendor (owner, pending only) |
 | GET | `/admin/orders` | Admin |
 
+### Favorites & reviews
+| Method | Endpoint | Access |
+|---|---|---|
+| GET | `/favorites` | Customer |
+| POST | `/favorites/toggle` | Customer |
+| GET | `/menu-items/:id/reviews` | Public |
+| POST | `/menu-items/:id/reviews` | Customer |
+
 ### Payments, transactions & users
 | Method | Endpoint | Access |
 |---|---|---|
