@@ -55,22 +55,7 @@ export const listAllOrders = asyncHandler(async (req, res) => {
   return sendResponse(res, { message: 'All orders fetched successfully', data: orders });
 });
 
-/* ────────────────────────── Admin ────────────────────────── */
-
-/** GET /api/v1/orders/admin?status=&page=&limit= */
-export const listAllOrders = asyncHandler(async (req, res) => {
-  const result = await orderService.listAllOrders({
-    ...parsePagination(req.query),
-    status: asOptionalString(req.query.status),
-  });
-
-  return sendResponse(res, {
-    message: 'All orders fetched successfully',
-    data: result.orders,
-    meta: result.meta,
-  });
-});
-
+/* ────────────────────────── Vendor ────────────────────────── */
 
 /** GET /api/v1/orders/vendor?status=&page=&limit= */
 export const listVendorOrders = asyncHandler(async (req, res) => {

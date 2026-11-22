@@ -142,35 +142,6 @@ export const listAllOrders = async (options: { status?: string } = {}) => {
     .sort({ createdAt: -1 });
 };
 
-/* ────────────────────────── Admin ────────────────────────── */
-
-/**
- * Platform-wide order feed for the admin dashboard. Populates the item, the
- * vendor and the customer so the client can render the same OrderCard it uses
- * for customer/vendor lists.
- */
-export const listAllOrders = async (options: Pagination & { status?: string }) => {
-  const { page, limit, skip, status } = options;
-
-  const filters: Record<string, unknown> = {};
-  applyStatusFilter(filters, status);
-
-  const [orders, total] = await Promise.all([
-    Order.find(filters)
-      .populate([
-        { path: 'itemId', select: ITEM_FIELDS },
-        { path: 'vendorId', select: VENDOR_FIELDS },
-        { path: 'customerId', select: CUSTOMER_FIELDS },
-      ])
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit),
-    Order.countDocuments(filters),
-  ]);
-
-  return { orders, meta: buildMeta(total, { page, limit }) };
-};
-
 /* ────────────────────────── Vendor ────────────────────────── */
 
 
