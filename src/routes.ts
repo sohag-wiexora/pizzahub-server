@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import adminRoutes from './modules/admin/admin.route.js';
 import dashboardRoutes from './modules/dashboard/dashboard.route.js';
 import menuItemRoutes from './modules/menuitem/menuItem.route.js';
 import orderRoutes from './modules/order/order.route.js';
@@ -11,6 +12,7 @@ const router = Router();
 
 router.use('/menu-items', menuItemRoutes);
 router.use('/orders', orderRoutes);
+router.use('/admin', adminRoutes);
 router.use('/payments', paymentRoutes);
 router.use('/transactions', transactionRoutes);
 router.use('/uploads', uploadRoutes);

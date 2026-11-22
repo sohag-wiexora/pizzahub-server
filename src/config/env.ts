@@ -56,8 +56,11 @@ const baseAuthUrl = parsed.data.BETTER_AUTH_URL.replace(/\/+$/, '');
 export const env = {
   ...parsed.data,
   clientOrigins: parseOrigins(parsed.data.CLIENT_URL),
-  // The auth middleware verifies JWTs against Better Auth's JWKS endpoint.
-  jwksUrl: parsed.data.JWT_JWKS_URL ?? `${baseAuthUrl}/api/auth/jwks`,
+  jwksUrl:
+    parsed.data.JWT_JWKS_URL ??
+    `${baseAuthUrl}/api/auth/jwks`,
 };
 
 export type Env = typeof env;
+
+

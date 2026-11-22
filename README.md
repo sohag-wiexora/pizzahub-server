@@ -209,6 +209,7 @@ Admins are **never** created through public registration:
 | PATCH | `/orders/:id/cancel` | Customer (owner, pending only) |
 | GET | `/orders/vendor` | Vendor |
 | PATCH | `/orders/:id/accept` · `/:id/reject` | Vendor (owner, pending only) |
+| GET | `/admin/orders` | Admin |
 
 ### Payments, transactions & users
 | Method | Endpoint | Access |

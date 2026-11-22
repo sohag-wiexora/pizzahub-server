@@ -22,4 +22,8 @@ router.get('/vendor', authenticate, requireRole('vendor'), controller.listVendor
 router.patch('/:id/accept', authenticate, requireRole('vendor'), controller.acceptOrder);
 router.patch('/:id/reject', authenticate, requireRole('vendor'), controller.rejectOrder);
 
+/* ── Admin routes ── */
+// Declared before the dynamic `/:id` routes so "admin" is never read as an id.
+router.get('/admin', authenticate, requireRole('admin'), controller.listAllOrders);
+
 export default router;
