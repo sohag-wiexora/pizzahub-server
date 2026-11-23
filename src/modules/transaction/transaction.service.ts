@@ -12,6 +12,7 @@ export interface TransactionListOptions extends Pagination {
  * Admin transaction history. Read-only by design — admins must never be
  * able to edit or delete payment records, so there are no write endpoints.
  */
+
 export const listTransactions = async (options: TransactionListOptions) => {
   const { page, limit, skip, status, plan } = options;
 

@@ -30,6 +30,7 @@ export const listPublicItems = asyncHandler(async (req, res) => {
 });
 
 /** GET /api/v1/menu-items/featured?limit=6 */
+
 export const listFeaturedItems = asyncHandler(async (req, res) => {
   const limit = asOptionalNumber(req.query.limit) ?? 6;
   const items = await menuItemService.listFeaturedItems(limit);
@@ -38,6 +39,7 @@ export const listFeaturedItems = asyncHandler(async (req, res) => {
 });
 
 /** GET /api/v1/menu-items/categories */
+
 export const listCategoryCounts = asyncHandler(async (_req, res) => {
   const categories = await menuItemService.listCategoryCounts();
 
@@ -45,6 +47,7 @@ export const listCategoryCounts = asyncHandler(async (_req, res) => {
 });
 
 /** GET /api/v1/menu-items/:id */
+
 export const getPublicItemDetails = asyncHandler(async (req, res) => {
   const item = await menuItemService.getPublicItemDetails(String(req.params.id));
 
@@ -54,6 +57,7 @@ export const getPublicItemDetails = asyncHandler(async (req, res) => {
 /* ────────────────────────── Vendor ────────────────────────── */
 
 /** POST /api/v1/menu-items */
+
 export const createMenuItem = asyncHandler(async (req, res) => {
   const vendor = getCurrentUser(req);
   const payload = createMenuItemSchema.parse(req.body);
@@ -67,6 +71,7 @@ export const createMenuItem = asyncHandler(async (req, res) => {
 });
 
 /** GET /api/v1/menu-items/mine?status=&page=&limit= */
+
 export const listVendorItems = asyncHandler(async (req, res) => {
   const vendor = getCurrentUser(req);
   const result = await menuItemService.listVendorItems(vendor.id, {
@@ -82,6 +87,7 @@ export const listVendorItems = asyncHandler(async (req, res) => {
 });
 
 /** GET /api/v1/menu-items/mine/:id */
+
 export const getVendorItemDetails = asyncHandler(async (req, res) => {
   const vendor = getCurrentUser(req);
   const item = await menuItemService.getVendorItemDetails(String(req.params.id), vendor.id);
@@ -90,6 +96,7 @@ export const getVendorItemDetails = asyncHandler(async (req, res) => {
 });
 
 /** PATCH /api/v1/menu-items/:id */
+
 export const updateMenuItem = asyncHandler(async (req, res) => {
   const vendor = getCurrentUser(req);
   const payload = updateMenuItemSchema.parse(req.body);
@@ -99,6 +106,7 @@ export const updateMenuItem = asyncHandler(async (req, res) => {
 });
 
 /** DELETE /api/v1/menu-items/:id */
+
 export const deleteMenuItem = asyncHandler(async (req, res) => {
   const vendor = getCurrentUser(req);
   const item = await menuItemService.deleteMenuItem(String(req.params.id), vendor.id);
@@ -109,6 +117,7 @@ export const deleteMenuItem = asyncHandler(async (req, res) => {
 /* ────────────────────────── Admin ────────────────────────── */
 
 /** GET /api/v1/menu-items/admin?search=&status=&category=&page=&limit= */
+
 export const listAllItemsForAdmin = asyncHandler(async (req, res) => {
   const result = await menuItemService.listAllItemsForAdmin({
     ...parsePagination(req.query),
@@ -125,6 +134,7 @@ export const listAllItemsForAdmin = asyncHandler(async (req, res) => {
 });
 
 /** PATCH /api/v1/menu-items/admin/:id/status */
+
 export const moderateItemStatus = asyncHandler(async (req, res) => {
   const status = asOptionalString(req.body?.status);
 
@@ -138,6 +148,7 @@ export const moderateItemStatus = asyncHandler(async (req, res) => {
 });
 
 /** DELETE /api/v1/menu-items/admin/:id */
+
 export const deleteItemAsAdmin = asyncHandler(async (req, res) => {
   const item = await menuItemService.deleteItemAsAdmin(String(req.params.id));
 

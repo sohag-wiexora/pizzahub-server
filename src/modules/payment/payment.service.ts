@@ -14,9 +14,11 @@ const msPerDay = 24 * 60 * 60 * 1000;
 const addDays = (date: Date, days: number): Date => new Date(date.getTime() + days * msPerDay);
 
 /** Stripe works in minor units (cents) — the API exposes major units (9.99 USD). */
+
 const toMajorUnits = (amount?: number | null): number => (amount ?? 0) / 100;
 
 /** Subscription ids can arrive as strings or expanded objects depending on the API version. */
+
 const asSubscriptionId = (subscription: unknown): string | null => {
   if (typeof subscription === 'string') return subscription;
   if (subscription && typeof subscription === 'object' && 'id' in subscription) {
@@ -29,6 +31,7 @@ const asSubscriptionId = (subscription: unknown): string | null => {
  * Resolves when the paid period ends by reading the subscription from
  * Stripe, falling back to a fixed period when it cannot be retrieved.
  */
+
 const resolvePeriodEnd = async (subscriptionId: unknown): Promise<Date> => {
   const fallback = addDays(new Date(), PREMIUM_PERIOD_DAYS);
   const id = asSubscriptionId(subscriptionId);
@@ -37,7 +40,9 @@ const resolvePeriodEnd = async (subscriptionId: unknown): Promise<Date> => {
   try {
     const subscription = await stripe.subscriptions.retrieve(id);
     const firstItem = subscription.items.data[0];
+    
     // Newer Stripe API versions moved current_period_end to the subscription item.
+   
     const periodEnd = (firstItem as { current_period_end?: number } | undefined)?.current_period_end;
 
     return periodEnd ? new Date(periodEnd * 1000) : fallback;
@@ -53,6 +58,7 @@ const resolvePeriodEnd = async (subscriptionId: unknown): Promise<Date> => {
  * The vendor is always taken from the verified token, so a vendor can never
  * create a session on behalf of someone else.
  */
+
 export const createCheckoutSession = async (vendor: AuthUser) => {
   if (isPremiumActive(vendor)) {
     throw new ApiError(400, 'You are already enjoying the Premium plan.');
@@ -62,7 +68,9 @@ export const createCheckoutSession = async (vendor: AuthUser) => {
 
   const session = await stripe.checkout.sessions.create({
     mode: 'subscription',
+    
     // Stripe picks the available payment methods automatically.
+   
     customer_email: vendor.email,
     client_reference_id: vendor.id,
     metadata: { vendorId: vendor.id },
@@ -76,6 +84,7 @@ export const createCheckoutSession = async (vendor: AuthUser) => {
 };
 
 /** Lets the Payment Success page confirm the state of a session it owns. */
+
 export const getSessionStatus = async (vendor: AuthUser, sessionId: string) => {
   const session = await stripe.checkout.sessions.retrieve(sessionId);
   const sessionVendorId = session.metadata?.vendorId ?? session.client_reference_id;
@@ -99,6 +108,7 @@ export const getSessionStatus = async (vendor: AuthUser, sessionId: string) => {
  * The ONLY place Premium is activated. The frontend success redirect is
  * never trusted — this handler runs after Stripe's signature is verified.
  */
+
 const handleCheckoutCompleted = async (session: Stripe.Checkout.Session): Promise<void> => {
   const vendorId = session.metadata?.vendorId ?? session.client_reference_id;
   if (!vendorId) {
@@ -115,6 +125,7 @@ const handleCheckoutCompleted = async (session: Stripe.Checkout.Session): Promis
   const subscriptionId = asSubscriptionId(session.subscription);
 
   // Webhooks can be retried — make the transaction write idempotent.
+  
   const alreadyRecorded = await Transaction.exists({ stripeSessionId: session.id });
   if (!alreadyRecorded) {
     await Transaction.create({
@@ -141,6 +152,7 @@ const handleCheckoutCompleted = async (session: Stripe.Checkout.Session): Promis
  * Renewal invoices extend the subscription. The first invoice is skipped
  * because checkout.session.completed already recorded that payment.
  */
+
 const handleInvoicePaid = async (invoice: Stripe.Invoice): Promise<void> => {
   const billingReason = (invoice as { billing_reason?: string | null }).billing_reason;
   if (billingReason === 'subscription_create') return;
@@ -170,6 +182,7 @@ const handleInvoicePaid = async (invoice: Stripe.Invoice): Promise<void> => {
   });
 
   // Extend from the current expiry (or now) so late webhooks never shorten a plan.
+  
   const currentExpiry = vendor.subscriptionExpiresAt ?? new Date();
   const base = currentExpiry.getTime() > Date.now() ? currentExpiry : new Date();
 
@@ -181,6 +194,7 @@ const handleInvoicePaid = async (invoice: Stripe.Invoice): Promise<void> => {
 };
 
 /** Cancellations through Stripe immediately drop the vendor back to Free. */
+
 const handleSubscriptionDeleted = async (subscription: Stripe.Subscription): Promise<void> => {
   const vendorId = subscription.metadata?.vendorId;
 
@@ -199,6 +213,7 @@ const handleSubscriptionDeleted = async (subscription: Stripe.Subscription): Pro
 };
 
 /** Verifies the Stripe signature and dispatches the supported events. */
+
 export const handleStripeWebhook = async (rawBody: Buffer, signature: string | undefined) => {
   let event: Stripe.Event;
 
@@ -219,8 +234,10 @@ export const handleStripeWebhook = async (rawBody: Buffer, signature: string | u
       await handleSubscriptionDeleted(event.data.object as Stripe.Subscription);
       break;
     default:
-      // Other events are acknowledged without action.
-      break;
+      
+    // Other events are acknowledged without action.
+    
+    break;
   }
 
   return event;

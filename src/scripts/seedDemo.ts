@@ -3,14 +3,6 @@ import { connectDB } from '../config/db.js';
 import { MenuItem } from '../models/menuItem.model.js';
 import { User } from '../models/user.model.js';
 
-/**
- * Seeds the storefront with demo vendors and menu items.
- *
- * Safe to run more than once: vendors are matched by email and items by a
- * fixed ObjectId, so re-running only refreshes the demo data.
- *
- *   npm run seed:demo
- */
 
 const img = (id: string, w = 1000) =>
   `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=80`;
@@ -336,7 +328,7 @@ const items: DemoItem[] = [
   },
 ];
 
-/** Stable ObjectId per item so re-running the seed updates instead of duplicating. */
+
 const itemId = (index: number) =>
   new Types.ObjectId(`66500000000000000000${String(index + 1).padStart(4, '0')}`);
 

@@ -31,6 +31,7 @@ export const createMenuItemSchema = z.object({
 });
 
 /** Vendors may only toggle availability; approval stays with the admin. */
+
 export const updateMenuItemSchema = createMenuItemSchema
   .partial()
   .extend({

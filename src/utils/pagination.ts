@@ -15,12 +15,7 @@ export interface Pagination {
 
 const MAX_PAGE_SIZE = 50;
 
-/**
- * Reads page/limit query params with sane defaults and hard limits.
- * The PizzaHub client renders whole lists (no pager), so the default page is
- * the maximum page — otherwise a dashboard would silently show only the first
- * 10 records.
- */
+
 export const parsePagination = (query: Record<string, unknown>): Pagination => {
   const page = Math.max(1, asOptionalNumber(query.page) ?? 1);
   const limit = Math.min(MAX_PAGE_SIZE, Math.max(1, asOptionalNumber(query.limit) ?? MAX_PAGE_SIZE));

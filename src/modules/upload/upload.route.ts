@@ -19,6 +19,7 @@ const router = Router();
 
 // Any signed-in user may upload (menu item images are required for vendors,
 // profile images are optional for everyone else).
+
 router.post('/image', authenticate, upload.single('image'), controller.uploadImage);
 
 export default router;

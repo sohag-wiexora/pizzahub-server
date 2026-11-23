@@ -3,16 +3,7 @@ import { auth, closeAuthClient } from '../config/auth.js';
 import { connectDB } from '../config/db.js';
 import { User } from '../models/user.model.js';
 
-/**
- * Creates (or promotes) the admin account securely.
- *
- * Admin accounts are never created through public registration — this
- * server-side script is the only path. It signs the account up through
- * Better Auth (so the password is hashed correctly) and then promotes
- * the role in the database:
- *
- *   npm run seed:admin
- */
+
 const run = async (): Promise<void> => {
   const adminEmail = process.env.ADMIN_EMAIL?.toLowerCase().trim();
   const adminName = process.env.ADMIN_NAME ?? 'PizzaHub Admin';

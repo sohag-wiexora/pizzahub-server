@@ -9,6 +9,7 @@ import { createOrderSchema } from './order.validation.js';
 /* ────────────────────────── Customer ────────────────────────── */
 
 /** POST /api/v1/orders */
+
 export const createOrder = asyncHandler(async (req, res) => {
   const customer = getCurrentUser(req);
   const payload = createOrderSchema.parse(req.body);
@@ -22,6 +23,7 @@ export const createOrder = asyncHandler(async (req, res) => {
 });
 
 /** GET /api/v1/orders/mine?status=&page=&limit= */
+
 export const listCustomerOrders = asyncHandler(async (req, res) => {
   const customer = getCurrentUser(req);
   const result = await orderService.listCustomerOrders(customer.id, {
@@ -37,6 +39,7 @@ export const listCustomerOrders = asyncHandler(async (req, res) => {
 });
 
 /** PATCH /api/v1/orders/:id/cancel */
+
 export const cancelOrder = asyncHandler(async (req, res) => {
   const customer = getCurrentUser(req);
   const order = await orderService.cancelOrder(String(req.params.id), customer);
@@ -47,6 +50,7 @@ export const cancelOrder = asyncHandler(async (req, res) => {
 /* ────────────────────────── Admin ────────────────────────── */
 
 /** GET /api/v1/admin/orders?status= */
+
 export const listAllOrders = asyncHandler(async (req, res) => {
   const orders = await orderService.listAllOrders({
     status: asOptionalString(req.query.status),
@@ -58,6 +62,7 @@ export const listAllOrders = asyncHandler(async (req, res) => {
 /* ────────────────────────── Vendor ────────────────────────── */
 
 /** GET /api/v1/orders/vendor?status=&page=&limit= */
+
 export const listVendorOrders = asyncHandler(async (req, res) => {
   const vendor = getCurrentUser(req);
   const result = await orderService.listVendorOrders(vendor.id, {
@@ -73,6 +78,7 @@ export const listVendorOrders = asyncHandler(async (req, res) => {
 });
 
 /** PATCH /api/v1/orders/:id/accept */
+
 export const acceptOrder = asyncHandler(async (req, res) => {
   const vendor = getCurrentUser(req);
   const order = await orderService.decideVendorOrder(String(req.params.id), vendor, 'accepted');
@@ -81,6 +87,7 @@ export const acceptOrder = asyncHandler(async (req, res) => {
 });
 
 /** PATCH /api/v1/orders/:id/reject */
+
 export const rejectOrder = asyncHandler(async (req, res) => {
   const vendor = getCurrentUser(req);
   const order = await orderService.decideVendorOrder(String(req.params.id), vendor, 'rejected');

@@ -4,6 +4,7 @@ import { sendResponse } from '../../utils/sendResponse.js';
 import * as favoriteService from './favorite.service.js';
 
 /** GET /api/v1/favorites */
+
 export const listFavorites = asyncHandler(async (req, res) => {
   const user = getCurrentUser(req);
 
@@ -13,6 +14,7 @@ export const listFavorites = asyncHandler(async (req, res) => {
 });
 
 /** POST /api/v1/favorites/toggle */
+
 export const toggleFavorite = asyncHandler(async (req, res) => {
   const user = getCurrentUser(req);
 

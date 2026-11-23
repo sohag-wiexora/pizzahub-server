@@ -20,7 +20,9 @@ const transactionSchema = new Schema<TransactionDocument>(
   {
     vendorId: { type: String, required: true, ref: 'User', index: true },
     plan: { type: String, default: 'premium' },
+    
     // Amount is stored in major units (e.g. 9.99 USD), converted from Stripe's minor units.
+    
     amount: { type: Number, required: true },
     currency: { type: String, default: 'usd' },
     stripeSessionId: { type: String, required: true, unique: true },

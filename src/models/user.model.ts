@@ -8,6 +8,7 @@ const { model, models, Schema } = mongoose;
  * so this collection stores `_id` as an ObjectId — the same convention the
  * auth JWT subject and the rest of the API identifiers use.
  */
+
 export interface UserDocument extends Document<Types.ObjectId> {
   _id: Types.ObjectId;
   name: string;

@@ -7,6 +7,7 @@ import { toggleFavoriteSchema } from './favorite.validation.js';
 const router = Router();
 
 /* ── Customer favorites ── */
+
 router.get('/', authenticate, requireRole('customer'), controller.listFavorites);
 router.post(
   '/toggle',

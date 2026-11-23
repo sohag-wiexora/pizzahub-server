@@ -4,6 +4,7 @@ import { sendResponse } from '../../utils/sendResponse.js';
 import * as uploadService from './upload.service.js';
 
 /** POST /api/v1/uploads/image (multipart, field name: "image") */
+
 export const uploadImage = asyncHandler(async (req, res) => {
   if (!req.file) {
     throw new ApiError(

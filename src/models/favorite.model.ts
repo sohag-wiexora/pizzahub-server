@@ -21,6 +21,7 @@ const favoriteSchema = new Schema<FavoriteDocument>(
 );
 
 // A customer can favorite an item only once.
+
 favoriteSchema.index({ userId: 1, itemId: 1 }, { unique: true });
 
 export const Favorite =

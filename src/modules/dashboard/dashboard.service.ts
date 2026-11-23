@@ -20,6 +20,7 @@ interface AggregateRow {
 }
 
 /** Labelled buckets for the last N months, oldest first. */
+
 const buildMonthBuckets = (): Array<{ start: Date; label: string }> => {
   const buckets = [];
   const cursor = new Date();
@@ -38,6 +39,7 @@ const buildMonthBuckets = (): Array<{ start: Date; label: string }> => {
 };
 
 /** Turns raw $group rows into a zero-filled series the frontend can chart directly. */
+
 const toMonthlySeries = (rows: AggregateRow[]): MonthBucket[] => {
   const buckets = buildMonthBuckets();
 
@@ -71,6 +73,7 @@ const monthlyCountPipeline = (match: Record<string, unknown>): PipelineStage[] =
   ] as PipelineStage[];
 
 /** Runs a monthly count aggregation and normalises the raw rows. */
+
 const runMonthlyCount = async (
   model: typeof Order | typeof User | typeof Transaction,
   match: Record<string, unknown>,
@@ -79,7 +82,7 @@ const runMonthlyCount = async (
   return rows;
 };
 
-/* ────────────────────────── Vendor ────────────────────────── */
+/*  Vendor  */
 
 export const getVendorOverview = async (vendor: AuthUser) => {
   const vendorId = vendor.id;
@@ -104,7 +107,7 @@ export const getVendorOverview = async (vendor: AuthUser) => {
   };
 };
 
-/* ────────────────────────── Customer ────────────────────────── */
+/* Customer  */
 
 export const getCustomerOverview = async (customerId: string) => {
   const statusCount = async (status?: OrderStatus): Promise<number> =>
@@ -126,7 +129,7 @@ export const getCustomerOverview = async (customerId: string) => {
   };
 };
 
-/* ────────────────────────── Admin ────────────────────────── */
+/* Admin */
 
 export const getAdminOverview = async () => {
   const since = buildMonthBuckets()[0].start;

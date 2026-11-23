@@ -15,6 +15,7 @@ const parseItemId = (itemId: string): Types.ObjectId => {
 };
 
 /** All reviews for a menu item, newest first. */
+
 export const listItemReviews = async (itemId: string) => {
   const id = parseItemId(itemId);
 
@@ -22,6 +23,7 @@ export const listItemReviews = async (itemId: string) => {
 };
 
 /** Recalculates the menu item rating/reviewCount from all its reviews. */
+
 const refreshItemRating = async (itemId: Types.ObjectId): Promise<void> => {
   const [stats] = await Review.aggregate<{
     _id: Types.ObjectId;
@@ -41,6 +43,7 @@ const refreshItemRating = async (itemId: Types.ObjectId): Promise<void> => {
 };
 
 /** Customer publishes a rating + comment for an approved menu item. */
+
 export const createReview = async (
   itemId: string,
   customer: AuthUser,

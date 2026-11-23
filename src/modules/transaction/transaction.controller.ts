@@ -6,6 +6,7 @@ import { sendResponse } from '../../utils/sendResponse.js';
 import * as transactionService from './transaction.service.js';
 
 /** GET /api/v1/transactions?status=&plan=&page=&limit= */
+
 export const listTransactions = asyncHandler(async (req, res) => {
   getCurrentUser(req);
 

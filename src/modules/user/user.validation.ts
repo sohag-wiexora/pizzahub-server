@@ -6,6 +6,7 @@ const isHttpUrl = (value: string): boolean => /^https?:\/\/\S+$/.test(value);
  * Profile updates are deliberately strict: role, subscriptionPlan and other
  * protected fields are rejected because unknown keys are not allowed.
  */
+
 export const updateProfileSchema = z
   .object({
     name: z

@@ -10,6 +10,7 @@ import { updateProfileSchema } from './user.validation.js';
 /* ────────────────────────── Profile ────────────────────────── */
 
 /** GET /api/v1/users/me */
+
 export const getProfile = asyncHandler(async (req, res) => {
   const authUser = getCurrentUser(req);
   const user = await User.findById(authUser.id);
@@ -21,6 +22,7 @@ export const getProfile = asyncHandler(async (req, res) => {
 });
 
 /** PATCH /api/v1/users/me */
+
 export const updateProfile = asyncHandler(async (req, res) => {
   const authUser = getCurrentUser(req);
   const payload = updateProfileSchema.parse(req.body);
@@ -32,6 +34,7 @@ export const updateProfile = asyncHandler(async (req, res) => {
 /* ────────────────────────── Admin ────────────────────────── */
 
 /** GET /api/v1/users?search=&role=&page=&limit= */
+
 export const listUsersForAdmin = asyncHandler(async (req, res) => {
   const result = await userService.listUsersForAdmin({
     ...parsePagination(req.query),
@@ -47,6 +50,7 @@ export const listUsersForAdmin = asyncHandler(async (req, res) => {
 });
 
 /** GET /api/v1/users/:id */
+
 export const getUserDetailsForAdmin = asyncHandler(async (req, res) => {
   const user = await userService.getUserDetailsForAdmin(String(req.params.id));
 
@@ -54,6 +58,7 @@ export const getUserDetailsForAdmin = asyncHandler(async (req, res) => {
 });
 
 /** PATCH /api/v1/users/:id/block */
+
 export const blockUser = asyncHandler(async (req, res) => {
   const admin = getCurrentUser(req);
   const user = await userService.setUserBlocked(String(req.params.id), true, admin.id);
@@ -62,6 +67,7 @@ export const blockUser = asyncHandler(async (req, res) => {
 });
 
 /** PATCH /api/v1/users/:id/unblock */
+
 export const unblockUser = asyncHandler(async (req, res) => {
   const admin = getCurrentUser(req);
   const user = await userService.setUserBlocked(String(req.params.id), false, admin.id);

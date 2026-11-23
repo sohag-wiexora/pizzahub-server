@@ -4,6 +4,7 @@ import { sendResponse } from '../../utils/sendResponse.js';
 import * as dashboardService from './dashboard.service.js';
 
 /** GET /api/v1/dashboard/vendor */
+
 export const getVendorOverview = asyncHandler(async (req, res) => {
   const vendor = getCurrentUser(req);
   const overview = await dashboardService.getVendorOverview(vendor);
@@ -12,6 +13,7 @@ export const getVendorOverview = asyncHandler(async (req, res) => {
 });
 
 /** GET /api/v1/dashboard/customer */
+
 export const getCustomerOverview = asyncHandler(async (req, res) => {
   const customer = getCurrentUser(req);
   const overview = await dashboardService.getCustomerOverview(customer.id);
@@ -23,6 +25,7 @@ export const getCustomerOverview = asyncHandler(async (req, res) => {
 });
 
 /** GET /api/v1/dashboard/admin */
+
 export const getAdminOverview = asyncHandler(async (req, res) => {
   getCurrentUser(req);
   const overview = await dashboardService.getAdminOverview();

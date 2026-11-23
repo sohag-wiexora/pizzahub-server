@@ -18,6 +18,7 @@ import type { CreateMenuItemInput, UpdateMenuItemInput } from './menuItem.valida
 const { isValidObjectId } = mongoose;
 
 /** Vendor fields exposed with every menu item (premium badge included). */
+
 const VENDOR_FIELDS = 'name businessName image subscriptionPlan';
 
 export interface PublicListOptions extends Pagination {
@@ -41,6 +42,7 @@ const SORT_OPTIONS: Record<string, Record<string, 1 | -1>> = {
 };
 
 /** Number of active (approved) items the vendor currently owns. */
+
 const countActiveItems = (vendorId: string): Promise<number> =>
   MenuItem.countDocuments({ vendorId, status: 'approved' });
 
@@ -48,6 +50,7 @@ const countActiveItems = (vendorId: string): Promise<number> =>
  * Free plan vendors may publish up to 3 active items; premium is unlimited.
  * Used when creating an item and when re-activating an inactive one.
  */
+
 const ensureActiveItemSlot = async (vendor: AuthUser): Promise<void> => {
   if (isPremiumActive(vendor)) return;
 
@@ -72,6 +75,7 @@ const findOwnedItem = async (itemId: string, vendorId: string): Promise<MenuItem
 /* ────────────────────────── Public ────────────────────────── */
 
 /** Public catalogue — only approved items are ever visible here. */
+
 export const listPublicItems = async (options: PublicListOptions) => {
   const { page, limit, skip, search, category, location, minPrice, maxPrice, sort } = options;
 
@@ -111,14 +115,17 @@ export const listPublicItems = async (options: PublicListOptions) => {
  * Homepage featured section. Premium vendors get featured placement,
  * so their items are pushed to the front before the newest ones.
  */
+
 export const listFeaturedItems = async (limit = 6) => {
   const featuredLimit = Math.min(12, Math.max(1, limit));
 
   return MenuItem.aggregate([
     { $match: { status: 'approved' } },
+   
     // vendorId is stored as a string, while Better Auth user ids are
     // ObjectIds. `populate()` casts automatically, but `$lookup` does not —
     // so convert it explicitly or every featured item is silently dropped.
+   
     {
       $addFields: {
         vendorObjectId: {
@@ -160,6 +167,7 @@ export const listFeaturedItems = async (limit = 6) => {
 };
 
 /** Category list with item counts, for the homepage categories section. */
+
 export const listCategoryCounts = () =>
   MenuItem.aggregate([
     { $match: { status: 'approved' } },
@@ -169,6 +177,7 @@ export const listCategoryCounts = () =>
   ]);
 
 /** Public item details page. Rejected/pending items look like missing items. */
+
 export const getPublicItemDetails = async (itemId: string) => {
   if (!isValidObjectId(itemId)) {
     throw new ApiError(400, 'Invalid menu item id.');

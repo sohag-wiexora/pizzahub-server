@@ -5,6 +5,7 @@ import * as reviewService from './review.service.js';
 import type { CreateReviewInput } from './review.validation.js';
 
 /** GET /api/v1/menu-items/:id/reviews */
+
 export const listItemReviews = asyncHandler(async (req, res) => {
   const reviews = await reviewService.listItemReviews(String(req.params.id));
 
@@ -12,6 +13,7 @@ export const listItemReviews = asyncHandler(async (req, res) => {
 });
 
 /** POST /api/v1/menu-items/:id/reviews */
+
 export const createReview = asyncHandler(async (req, res) => {
   const customer = getCurrentUser(req);
   const payload = req.body as CreateReviewInput;

@@ -6,6 +6,7 @@ import { sendResponse } from '../../utils/sendResponse.js';
 import * as paymentService from './payment.service.js';
 
 /** POST /api/v1/payments/checkout-session */
+
 export const createCheckoutSession = asyncHandler(async (req, res) => {
   const vendor = getCurrentUser(req);
   const session = await paymentService.createCheckoutSession(vendor);
@@ -19,10 +20,11 @@ export const createCheckoutSession = asyncHandler(async (req, res) => {
 
 /**
  * POST /api/v1/payments/webhook
- *
+ 
  * Mounted with express.raw() before the global JSON parser so Stripe's
  * signature can be verified against the untouched request body.
  */
+
 export const handleStripeWebhook = asyncHandler(async (req: Request, res) => {
   const header = req.headers['stripe-signature'];
   const signature = Array.isArray(header) ? header[0] : header;
@@ -35,6 +37,7 @@ export const handleStripeWebhook = asyncHandler(async (req: Request, res) => {
 });
 
 /** GET /api/v1/payments/session-status/:sessionId */
+
 export const getSessionStatus = asyncHandler(async (req, res) => {
   const vendor = getCurrentUser(req);
   const sessionId = String(req.params.sessionId ?? '');

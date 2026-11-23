@@ -5,11 +5,7 @@ interface SubscriptionInfo {
   subscriptionExpiresAt: Date | null;
 }
 
-/**
- * Premium is considered active only while the plan is set to "premium"
- * and the subscription has not expired. Expired subscriptions fall back
- * to the Free plan automatically.
- */
+
 export const isPremiumActive = (user: SubscriptionInfo): boolean => {
   if (user.subscriptionPlan !== 'premium') return false;
   if (!user.subscriptionExpiresAt) return true;

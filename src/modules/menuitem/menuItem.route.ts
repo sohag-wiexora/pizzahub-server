@@ -9,11 +9,13 @@ import { createReviewSchema } from '../review/review.validation.js';
 const router = Router();
 
 /* ── Public routes (no authentication) ── */
+
 router.get('/', controller.listPublicItems);
 router.get('/featured', controller.listFeaturedItems);
 router.get('/categories', controller.listCategoryCounts);
 
 /* ── Vendor routes ── */
+
 router.post(
   '/',
   authenticate,
@@ -33,6 +35,7 @@ router.patch(
 router.delete('/:id', authenticate, requireRole('vendor'), controller.deleteMenuItem);
 
 /* ── Admin routes ── */
+
 router.get('/admin', authenticate, requireRole('admin'), controller.listAllItemsForAdmin);
 router.patch(
   '/admin/:id/status',
@@ -43,6 +46,7 @@ router.patch(
 router.delete('/admin/:id', authenticate, requireRole('admin'), controller.deleteItemAsAdmin);
 
 /* ── Reviews ── */
+
 router.get('/:id/reviews', reviewController.listItemReviews);
 router.post(
   '/:id/reviews',
@@ -53,6 +57,7 @@ router.post(
 );
 
 /* ── Public item details (kept last so /:id does not swallow the paths above) ── */
+
 router.get('/:id', controller.getPublicItemDetails);
 
 export default router;

@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 /** Body for POST /api/v1/favorites/toggle — id of the item to toggle. */
+
 export const toggleFavoriteSchema = z.object({
   itemId: z
     .string({ message: 'Menu item id is required' })

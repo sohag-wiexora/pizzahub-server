@@ -9,7 +9,6 @@ interface ResponseOptions<T> {
   meta?: PaginationMeta;
 }
 
-/** Every API endpoint answers with the same predictable JSON shape. */
 export const sendResponse = <T>(res: Response, options: ResponseOptions<T>): Response => {
   const { statusCode = 200, success = true, message, data, meta } = options;
 

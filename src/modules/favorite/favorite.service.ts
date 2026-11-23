@@ -6,6 +6,7 @@ import { ApiError } from '../../utils/apiError.js';
 const { isValidObjectId } = mongoose;
 
 /** Returns the list of favorited item ids for a customer (unordered array). */
+
 export const listFavoriteIds = async (userId: string): Promise<string[]> => {
   const favorites = await Favorite.find({ userId })
     .select('itemId')
@@ -14,10 +15,11 @@ export const listFavoriteIds = async (userId: string): Promise<string[]> => {
   return favorites.map((favorite) => favorite.itemId.toString());
 };
 
-/**
+/*
  * Toggles a customer's favorite on/off. Returns the fresh list of
  * favorite item ids after the change.
  */
+
 export const toggleFavorite = async (userId: string, itemId: string): Promise<string[]> => {
   if (!isValidObjectId(itemId)) {
     throw new ApiError(400, 'Invalid menu item id.');

@@ -11,6 +11,7 @@ interface MongooseLikeError {
 }
 
 /** Fallback for requests that do not match any route. */
+
 export const notFoundHandler: RequestHandler = (req, res) => {
   res.status(404).json({
     success: false,
@@ -19,6 +20,7 @@ export const notFoundHandler: RequestHandler = (req, res) => {
 };
 
 /** Converts every thrown error into a consistent JSON error response. */
+
 export const errorHandler: ErrorRequestHandler = (error, _req, res, _next) => {
   const known = error as MongooseLikeError & { stack?: string };
 

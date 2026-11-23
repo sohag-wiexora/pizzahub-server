@@ -7,6 +7,7 @@ import { createOrderSchema } from './order.validation.js';
 const router = Router();
 
 /* ── Customer routes ── */
+
 router.post(
   '/',
   authenticate,
@@ -18,6 +19,7 @@ router.get('/mine', authenticate, requireRole('customer'), controller.listCustom
 router.patch('/:id/cancel', authenticate, requireRole('customer'), controller.cancelOrder);
 
 /* ── Vendor routes ── */
+
 router.get('/vendor', authenticate, requireRole('vendor'), controller.listVendorOrders);
 router.patch('/:id/accept', authenticate, requireRole('vendor'), controller.acceptOrder);
 router.patch('/:id/reject', authenticate, requireRole('vendor'), controller.rejectOrder);

@@ -1,6 +1,7 @@
 import type { UserRole } from '../constants/index.js';
 
 /** The authenticated user attached to the request by the auth middleware. */
+
 export interface AuthUser {
   id: string;
   name: string;

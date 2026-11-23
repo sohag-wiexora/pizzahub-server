@@ -7,6 +7,7 @@ import { ApiError } from '../utils/apiError.js';
  * coerced) data replaces req.body, on failure it throws a 400 with
  * a per-field detail list.
  */
+
 export const validateBody =
   (schema: ZodType): RequestHandler =>
   (req, _res, next) => {

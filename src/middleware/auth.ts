@@ -13,9 +13,11 @@ import type { AuthUser } from '../interfaces/auth.js';
  * request, so invalid or expired tokens are rejected with 401 before
  * touching any data.
  */
+
 const jwks = createRemoteJWKSet(new URL(env.jwksUrl));
 
 /** Verifies the Bearer token, loads the user from the DB and blocks banned accounts. */
+
 export const authenticate = asyncHandler(async (req, _res, next) => {
   const authHeader = req.headers.authorization;
   if (!authHeader?.startsWith('Bearer ')) {
@@ -36,6 +38,7 @@ export const authenticate = asyncHandler(async (req, _res, next) => {
   }
 
   // The database is the single source of truth — roles sent by the client are never trusted.
+  
   const user = await User.findById(payload.sub);
   if (!user) {
     throw new ApiError(401, 'The account linked to this session no longer exists.');
@@ -59,6 +62,7 @@ export const authenticate = asyncHandler(async (req, _res, next) => {
 });
 
 /** Restricts a route to the given roles. Wrong roles get a 403. */
+
 export const requireRole =
   (...roles: UserRole[]): RequestHandler =>
   (req, _res, next) => {
@@ -72,6 +76,7 @@ export const requireRole =
   };
 
 /** Returns the authenticated user or throws 401 — use inside controllers. */
+
 export const getCurrentUser = (req: Request): AuthUser => {
   if (!req.user) {
     throw new ApiError(401, 'Authentication required. Please sign in to continue.');

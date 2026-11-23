@@ -22,6 +22,7 @@ interface UploadableFile {
  * Proxies the upload to ImgBB so the API key never leaves the server.
  * Returns the direct image URL that is stored on menu items.
  */
+
 export const uploadImageToImgbb = async (file: UploadableFile) => {
   const form = new FormData();
   form.append(

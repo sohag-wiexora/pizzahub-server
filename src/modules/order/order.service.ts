@@ -53,6 +53,7 @@ export const createOrder = async (customer: AuthUser, payload: CreateOrderInput)
   }
 
   // One active order per item per delivery date keeps the vendor queue clean.
+
   const duplicate = await Order.exists({
     customerId: customer.id,
     itemId: item._id,
@@ -129,6 +130,7 @@ export const cancelOrder = async (orderId: string, customer: AuthUser) => {
 /* ────────────────────────── Admin ────────────────────────── */
 
 /** Every order on the platform, newest first. Used by the admin dashboard. */
+
 export const listAllOrders = async (options: { status?: string } = {}) => {
   const filters: Record<string, unknown> = {};
   applyStatusFilter(filters, options.status);
@@ -167,6 +169,7 @@ export const listVendorOrders = async (vendorId: string, options: Pagination & {
 };
 
 /** Accepts or rejects a pending order. The decision can only be made once. */
+
 export const decideVendorOrder = async (
   orderId: string,
   vendor: AuthUser,
